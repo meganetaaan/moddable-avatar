@@ -1,0 +1,1 @@
+mcconfig -d -m -p esp32/m5stack

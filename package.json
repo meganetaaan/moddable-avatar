@@ -1,0 +1,35 @@
+{
+  "name": "moddable-boilerplate",
+  "version": "0.0.0",
+  "description": "Yet another moddableSDK project boilerplate with typescript, eslint and prettier",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/** --ext .ts,.tsx",
+    "lint:fix": "yarn lint --fix",
+    "build": "tsc && mcconfig",
+    "deploy:linux": "tsc && cd src && mcconfig -d -m -p lin",
+    "deploy:m5stack": "tsc && cd src && mcconfig -d -m -p esp32/m5stack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/meganetaaan/moddable-boilerplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meganetaaan/moddable-boilerplate/issues"
+  },
+  "homepage": "https://github.com/meganetaaan/moddable-boilerplate#readme",
+  "private": true,
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.3.0",
+    "@typescript-eslint/parser": "^1.3.0",
+    "eslint": "^5.13.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.16.4",
+    "typescript": "^3.3.3"
+  }
+}
