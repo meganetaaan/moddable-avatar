@@ -13,9 +13,5 @@
  *
  */
 
-import Servo from "pins";
-
-const servo = new Servo();
-
 const message = "Hello, world - sample";
 trace(message + "\n");

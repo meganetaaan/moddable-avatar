@@ -12,5 +12,9 @@
  *
  */
 
+import PWM from "pins/pwm";
+
+const pwm = new PWM(1, PWM.Input);
+
 const message = "Hello, world - sample";
 trace(message + "\n");
