@@ -14,7 +14,9 @@
 
 import PWM from "pins/pwm";
 
-const pwm = new PWM(1, PWM.Input);
+const pwm = new PWM({
+  pin: 1
+});
 
 const message = "Hello, world - sample";
 trace(message + "\n");

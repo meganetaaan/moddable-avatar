@@ -1,2 +1,2 @@
-import { PWM } from "./index";
-export = PWM;
+import { Digital } from "./index";
+export = Digital;

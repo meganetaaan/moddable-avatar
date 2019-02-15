@@ -1,4 +1,13 @@
 declare namespace pins {
+  class AudioIn {
+    constructor();
+    close(): void;
+    read(samples: number): number;
+    readonly sampleRate: number;
+    readonly bitsPerSample: number;
+    readonly numChannels: number;
+  }
+  namespace AudioIn {}
   class Digital {
     constructor(dictionary: Digital.constructorParam);
     constructor(pin: number, mode: number);
