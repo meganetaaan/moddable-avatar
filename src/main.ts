@@ -1,22 +1,23 @@
 /*
- * Copyright (c) 2016-2017  Moddable Tech, Inc.
- *
- *   This file is part of the Moddable SDK.
- *
- *   This work is licensed under the
- *       Creative Commons Attribution 4.0 International License.
- *   To view a copy of this license, visit
- *       <http://creativecommons.org/licenses/by/4.0>.
- *   or send a letter to Creative Commons, PO Box 1866,
- *   Mountain View, CA 94042, USA.
- *
+ * Copyright (c) 2019 Shinya Ishikawa
  */
 
-import PWM from "pins/pwm";
+import I2C from "pins/i2c";
+import Timer from "timer";
 
-const pwm = new PWM({
-  pin: 1
+const INTERVAL: number = 30;
+const i2c = new I2C({
+  sda: 21,
+  scl: 22,
+  address: 0x52
 });
+
+const buf = new ArrayBuffer(3);
+Timer.repeat(_ => {
+  i2c.read(3, buf);
+  const int8arr = new Uint8Array(buf);
+  trace(`${int8arr[0]}, ${int8arr[1]}, ${int8arr[2]}\n`);
+}, INTERVAL);
 
 const message = "Hello, world - sample";
 trace(message + "\n");
