@@ -1,20 +1,47 @@
 import { IOCapability } from "./sm";
-declare class BLEClient {
+declare class BLEServer {
   onReady(): void;
-  startScanning(params?: BLEClient.startScanningParam): void;
+  deploy(): void;
+  startAdvertising(params?: BLEServer.startAdvertisingParam): void;
+  stopAdvertising(): void;
+  notifyValue(characteristic: Characteristic, value: ArrayBuffer): void;
+  onCharacteristicNotifyEnabled(charasteristic: Characteristic): void;
+  onCharacteristicWritten(params: {
+    uuid: Bytes;
+    name: string;
+    type: string;
+    handle: string;
+    value: any;
+  }): void;
+  onCharacteristicRead(params: {
+    uuid: Bytes;
+    name: string;
+    type: string;
+    handle: number;
+  }): any;
+  disconnect(): void;
+  onConnected(device: Device): void;
+  onDisconnected(device: Device): void;
+  close(): void;
+  /*
   onDiscovered(device: Device): void;
   stopScanning(): void;
   connect(device: Device): void;
-  onConnected(device: Device): void;
+  */
+  deviceName: string;
+  localAddress: Bytes;
   securityParameters: SecurityParameters;
 }
-declare namespace BLEClient {
-  interface startScanningParam {
-    active?: boolean;
-    interval?: number;
-    window?: number;
+declare namespace BLEServer {
+  interface startAdvertisingParam {
+    advertisingData?: AdvertisementData;
+    connectable?: boolean;
+    discoverable?: boolean;
+    fast?: boolean;
+    scanResponseData?: object;
   }
 }
+type AdvertisementData = object;
 declare class Device {
   connection: number;
   address: Bytes;
@@ -103,5 +130,4 @@ declare interface SecurityParameters {
   mitm: boolean;
   ioCapability: IOCapability;
 }
-
-export = BLEClient;
+export = BLEServer;
