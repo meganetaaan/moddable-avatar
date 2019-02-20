@@ -1,4 +1,5 @@
 import { IOCapability } from "./sm";
+import { Bytes } from "./btutils";
 declare class BLEServer {
   onReady(): void;
   deploy(): void;
@@ -65,10 +66,6 @@ declare class Service {
   discoverCharacteristic(uuid: Bytes): void;
   findCharacteristicByUUID(uuid: Bytes): void;
   onCharacteristics(characteristics: Characteristic[]): void;
-}
-declare class Bytes {
-  constructor(bytes: ArrayBuffer | string, littleEndian?: boolean);
-  equals(buffer: Bytes): boolean;
 }
 declare namespace btutils {
   function address(
