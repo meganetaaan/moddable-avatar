@@ -81,8 +81,8 @@ declare namespace Commodetto {
     readonly bpp: number;
   }
 
-  function parseBMF(): any;
-  function parseBMP(): any;
+  function parseBMF(): BMFont;
+  function parseBMP(): Bitmap;
 
   abstract class Render {
     constructor(pixelsOut: PixelsOut, dictionary: any);
@@ -101,6 +101,8 @@ declare namespace Commodetto {
   }
 
   class Poco extends Render {
+    readonly height: number;
+    readonly width: number;
     constructor(
       pixelsOut: PixelsOut,
       dictionary: {
@@ -169,7 +171,44 @@ declare namespace Commodetto {
           mask_sy?: number,
           blend?: number
         ): void;
+        fillPattern(
+          bits: Bitmap,
+          x: number,
+          y: number,
+          w: number,
+          h: number,
+          sx?: number,
+          sy?: number,
+          sw?: number,
+          sh?: number,
+          mask?: number,
+          mask_sx?: number,
+          mask_sy?: number,
+          blend?: number
+        ): void;
+        drawText(
+          text: string,
+          font: BMFont,
+          color: Color,
+          x: number,
+          y: number,
+          width?: number
+        ): void;
+        getTextWidth(text: string, font: BMFont): number;
+        drawFrame(
+          frame: ColorCell,
+          dictionary: {
+            width: number;
+            height: number;
+          },
+          x: number,
+          y: number
+        ): void;
       }
     );
   }
+  // TODO
+  type BMFont = any;
+  type Color = number;
+  type ColorCell = any;
 }
