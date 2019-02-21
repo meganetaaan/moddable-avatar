@@ -1,2 +1,2 @@
-import { ColorCellOut } from "./index";
-export = ColorCellOut;
+import { Convert } from "./index";
+export = Convert;
