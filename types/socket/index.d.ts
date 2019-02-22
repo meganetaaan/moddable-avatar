@@ -14,8 +14,11 @@ declare namespace socket {
   }
   type Packet = string | ArrayBuffer | number;
   class Listener {
-    constructor(dictionary: { port: number });
+    constructor(dictionary: ListenerConstructorParam);
     callback(): void;
+  }
+  interface ListenerConstructorParam {
+    port: number;
   }
   interface SocketConstructorParam {
     address?: string;
