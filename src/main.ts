@@ -5,7 +5,7 @@
 import I2C from "pins/i2c";
 import Timer from "timer";
 
-const INTERVAL: number = 30;
+const INTERVAL = 30;
 const i2c = new I2C({
   sda: 21,
   scl: 22,

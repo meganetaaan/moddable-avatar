@@ -7,9 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src/** --ext .ts,.tsx",
     "lint:fix": "yarn lint --fix",
-    "build": "tsc && mcconfig",
-    "deploy:linux": "tsc && cd src && mcconfig -d -m -p lin",
-    "deploy:m5stack": "tsc && cd src && mcconfig -d -m -p esp32/m5stack"
+    "clean": "rm -r build/*",
+    "build": "npm run clean && tsc && cp manifest.json build/ && cd build && mcconfig",
+    "deploy:linux": "npm run clean && tsc && cp manifest.json build/ && cd build && mcconfig -d -m -p lin",
+    "deploy:m5stack": "npm run clean && tsc && cp manifest.json build/ && cd build && mcconfig -d -m -p esp32/m5stack"
   },
   "repository": {
     "type": "git",
