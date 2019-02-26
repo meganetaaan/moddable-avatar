@@ -83,8 +83,15 @@ declare namespace piu {
   type Skin = TextureSkin | ColorSkin;
   class Style {
     constructor(dictionary: StyleConstructorParam);
+    measure(string: string): Size;
   }
-  class Texture {}
+  class Texture {
+    constructor(path: string);
+    constructor(dictionary: TextureConstructorParam);
+    readonly height: number;
+    readonly width: number;
+    static template(dictionary: TextureConstructorParam): TextureConstructor;
+  }
   class ColorSkin {
     constructor(dictionary: ColorSkinConstructorParam);
     borders: Coordinates;
@@ -106,8 +113,32 @@ declare namespace piu {
     bottom?: number;
     left?: number;
   }
-  class Transition {}
-  class Container extends Content {}
+  class Transition {
+    constructor(duration: number);
+    onBegin(container: Container, ...extras: any[]): void;
+    onEnd(container: Container, ...extras: any[]): void;
+    onStep(fraction: number): void;
+  }
+  class Container extends Content {
+    constructor(behaviorData: any, dictionary: ContainerConstructorParam);
+    clip: boolean;
+    readonly first: Content | null;
+    readonly last: Content | null;
+    readonly length: number;
+    readonly transitioning: boolean;
+    add(content: Content): void;
+    content(at: number | string): Content;
+    empty(start?: number, stop?: number): void;
+    firstThat(id: string, ...extras: any[]): void;
+    insert(content: Content, before: Content): void;
+    lastThat(id: string, ...extras: any[]): void;
+    remove(content: Content): void;
+    replace(content: Content, by: Content): void;
+    run(transition: Transition, ...extras: any[]): void;
+    swap(content0: Content, content1: Content): void;
+    onTransitionBeginning(container: Container): void;
+    onTransitionEnded(container: Container): void;
+  }
   class Label extends Content {
     constructor(behaviorData: any, dictionary: LabelConstructorParam);
     string: string;
@@ -190,7 +221,22 @@ declare namespace piu {
       height: number
     ): void;
   }
-  class Text extends Content {}
+  class Text extends Content {
+    constructor(begaviorData: any, dictionary: TextConstructorParam);
+    blocks: {
+      behavior: object | null;
+      style: Style | null;
+      spans: string | string[];
+    }[];
+    string: string;
+    begin(): void;
+    beginBlock(style?: Style, behavior?: object): void;
+    beginSpan(style: Style, behavior?: object): void;
+    concat(string: string): void;
+    end(): void;
+    endBlock(): void;
+    endSpan(): void;
+  }
   class Application extends Container {}
   class Column extends Container {}
   class Layout extends Container {
@@ -228,6 +274,27 @@ declare namespace piu {
     scrollBy(dx: number, dy: number): void;
     scrollTo(x: number, y: number): void;
     onScrolled(scroller: Scroller): void;
+  }
+  class Timeline {
+    constructor();
+    duration: number;
+    fraction: number;
+    time: number;
+    from(
+      target: object,
+      fromProperties: object,
+      duration: number,
+      easing?: string,
+      delay?: number
+    ): Timeline;
+    seekTo(time: number): void;
+    to(
+      target: object,
+      fromProperties: object,
+      duration: number,
+      easing?: string,
+      delay?: number
+    ): Timeline;
   }
   interface ContentConstructorParam
     extends Position,
@@ -276,17 +343,29 @@ declare namespace piu {
     height?: number;
   }
   interface Bounds extends Position, Size {}
+  interface TextConstructorParam extends ContentConstructorParam {
+    blocks?: {
+      behavior: object | null;
+      style: Style | null;
+      spans: string | string[];
+    }[];
+    string: string;
+  }
   interface ImageConstructorParam extends ContentConstructorParam {
     path: string;
   }
   interface LabelConstructorParam extends ContentConstructorParam {
     string: string;
   }
-  interface ContainerConstructorParam extends ContentConstructorParam {}
+  interface ContainerConstructorParam extends ContentConstructorParam {
+    clip: boolean;
+  }
   interface ScrollerConstructorParam extends ContainerConstructorParam {
     loop: boolean;
   }
-  interface TextureConstructorParam {}
+  interface TextureConstructorParam {
+    path: string;
+  }
   interface TextureSkinConstructorParam extends Coordinates, Bounds {
     texture?: Texture;
     Texture: TextureConstructor;
