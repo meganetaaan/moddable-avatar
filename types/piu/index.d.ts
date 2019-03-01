@@ -43,8 +43,8 @@ declare namespace piu {
       ticks: number
     ): void;
     static template(
-      anonymous: () => ContentConstructorParam
-    ): () => ContentConstructor;
+      anonymous: (param: any) => ContentConstructorParam
+    ): typeof Template;
 
     readonly previous: Content | null;
     readonly next: Content | null;
@@ -79,6 +79,10 @@ declare namespace piu {
     y: number;
     width: number;
     height: number;
+  }
+  class Template extends Content {
+    constructor(behavior: any, param: any);
+    constructor(param: any);
   }
   type Skin = TextureSkin | ColorSkin;
   class Style {
@@ -304,12 +308,12 @@ declare namespace piu {
       TouchProperty {
     name?: string;
     anchor?: string;
-    Behavior?: () => Behavior;
+    Behavior?: new () => Behavior;
     skin?: Skin;
     Skin?: () => Skin;
     style?: Style;
     Style?: () => Style;
-    visible: boolean;
+    visible?: boolean;
   }
   interface TimeProperty {
     time?: number;
@@ -375,9 +379,9 @@ declare namespace piu {
     tiles?: Coordinates;
   }
   interface ColorSkinConstructorParam {
-    borders: Coordinates;
-    fill: Color | Color[];
-    stroke: Color | Color[];
+    borders?: Coordinates;
+    fill?: Color | Color[];
+    stroke?: Color | Color[];
   }
   type StyleConstructorParam =
     | LabelStyleConstructorParam
@@ -387,6 +391,7 @@ declare namespace piu {
   }
   interface TextureConstructor {
     new (dictionary: TextureConstructorParam): Texture;
+    template(dictionary: TextureConstructorParam | any): TextureConstructor;
   }
   interface TextStyleConstructorParam extends StyleConstructorParamBase {
     leading: number;
