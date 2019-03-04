@@ -1,13 +1,13 @@
 declare class WiFi {
-  constructor(dictionary: WiFiParam, callback: (message: string) => void);
+  constructor(dictionary: WiFi.WiFiParam, callback: (message: string) => void);
   close(): void;
   static scan(
     dictionary: { hidden?: boolean; channel?: number },
-    callback: (item: WiFi | null) => void
+    callback: (item: WiFi.WiFiParam | null) => void
   ): void;
   readonly status: number;
   readonly mode: number;
-  static connect(dictionary: WiFiParam): void;
+  static connect(dictionary: WiFi.WiFiParam): void;
   static accessPoint(dictionary: {
     ssid: string;
     password?: string;
@@ -17,13 +17,11 @@ declare class WiFi {
     max?: number;
   }): void;
 }
-type WiFiParam =
-  | {
-      ssid: string;
-      password?: string;
-    }
-  | {
-      bssid: string;
-      password?: string;
-    };
+declare namespace WiFi {
+  interface WiFiParam {
+    ssid?: string;
+    password?: string;
+    bssid?: string;
+  }
+}
 export = WiFi;
