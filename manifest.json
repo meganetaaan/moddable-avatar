@@ -1,8 +1,10 @@
 {
   "build": {},
-  "include": ["$(MODDABLE)/examples/manifest_base.json"],
-  "modules": {
-    "*": ["./main", "$(MODULES)/network/http/*"]
+  "include": ["$(MODDABLE)/examples/manifest_base.json", "$(MODDABLE)/examples/manifest_piu.json"],
+  "resources": {
+    "*": ["./assets/images/*"]
   },
-  "preload": ["http"]
+  "modules": {
+    "*": ["./avatar", "./main"]
+  }
 }
