@@ -8,9 +8,9 @@
     "lint": "eslint src/** --ext .ts,.tsx",
     "lint:fix": "yarn lint --fix",
     "clean": "rimraf ./build",
-    "build": "npm run clean && tsc && cp manifest.json build/ && cd build && mcconfig",
-    "deploy:linux": "npm run clean && tsc && cp manifest.json build/ && cd build && mcconfig -d -m -p lin",
-    "deploy:m5stack": "npm run clean && tsc && cp manifest.json build/ && cd build && mcconfig -d -m -p esp32/m5stack"
+    "build": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig",
+    "deploy:linux": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -d -m -p lin",
+    "deploy:m5stack": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -d -m -p esp32/m5stack"
   },
   "repository": {
     "type": "git",
@@ -35,5 +35,8 @@
     "rimraf": "^2.6.3",
     "sucrase": "^3.10.1",
     "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "eslint-config-standard": "^14.1.0"
   }
 }
