@@ -1,6 +1,6 @@
 import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
 
-const EYE_COLOR = 'white'
+const AVATAR_COLOR_FG = 'white'
 
 const AvatarEyeSkinTexture = Texture.template({
   path: 'eye-alpha.bmp',
@@ -10,10 +10,10 @@ const AvatarEyeSkin = Skin.template({
   Texture: AvatarEyeSkinTexture,
   width: 16,
   height: 16,
-  color: EYE_COLOR,
+  color: AVATAR_COLOR_FG,
 })
 
-const AvatarEye = Content.template(({ top, right, bottom, left, x, y, width, height }) => ({
+const AvatarEye = Content.template(({ top, right, bottom, left, x, y }) => ({
   top,
   right,
   bottom,
@@ -26,6 +26,20 @@ const AvatarEye = Content.template(({ top, right, bottom, left, x, y, width, hei
   Behavior: class extends Behavior {
     onCreated() {}
   },
+}))
+
+const AvatarMouth = Content.template(({ top, right, bottom, left, x, y }) => ({
+  top,
+  right,
+  bottom,
+  left,
+  x,
+  y,
+  width: 60,
+  height: 4,
+  skin: new Skin({
+    fill: AVATAR_COLOR_FG,
+  }),
 }))
 
 const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height }) => ({
@@ -48,6 +62,10 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
     new AvatarEye({
       left: 222,
       top: 88,
+    }),
+    new AvatarMouth({
+      left: 130,
+      top: 148,
     }),
   ],
 }))
