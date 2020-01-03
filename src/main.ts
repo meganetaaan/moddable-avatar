@@ -1,5 +1,6 @@
 import Avatar from 'avatar'
-import { Application, Skin } from 'piu/MC'
+import { Application, Skin, Container } from 'piu/MC'
+import Timer from 'timer'
 
 const fluid = {
   top: 0,
@@ -7,7 +8,7 @@ const fluid = {
   bottom: 0,
   left: 0,
 }
-new Application(null, {
+const ap = new Application(null, {
   ...fluid,
   contents: [
     new Avatar({
@@ -15,3 +16,13 @@ new Application(null, {
     }),
   ],
 })
+
+Timer.repeat(() => {
+  // debugger
+  const content = ap.first
+  if (content != null) {
+    const danger: any | Container = content
+    danger.content(0).start()
+    danger.content(1).start()
+  }
+}, 4000)
