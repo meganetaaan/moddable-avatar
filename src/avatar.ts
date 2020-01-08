@@ -1,5 +1,4 @@
 import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
-import Timer from 'timer'
 
 const AVATAR_COLOR_FG = 'white'
 const NAME_LEFTEYE = 'leftEye'

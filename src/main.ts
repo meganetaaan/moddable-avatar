@@ -1,6 +1,5 @@
 import Avatar from 'avatar'
-import { Application, Skin, Container } from 'piu/MC'
-import Timer from 'timer'
+import { Application } from 'piu/MC'
 
 const fluid = {
   top: 0,
