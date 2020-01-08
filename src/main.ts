@@ -13,16 +13,8 @@ const ap = new Application(null, {
   contents: [
     new Avatar({
       ...fluid,
+      width: 320,
+      height: 240,
     }),
   ],
 })
-
-Timer.repeat(() => {
-  // debugger
-  const content = ap.first
-  if (content != null) {
-    const danger: any | Container = content
-    danger.content(0).start()
-    danger.content(1).start()
-  }
-}, 4000)
