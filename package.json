@@ -1,7 +1,7 @@
 {
-  "name": "moddable-boilerplate",
-  "version": "0.0.0",
-  "description": "Yet another moddableSDK project boilerplate with typescript, eslint and prettier",
+  "name": "moddable-avatar",
+  "version": "0.1.0",
+  "description": "Yet another fun avatar face module for Moddable SDK.",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,20 +9,26 @@
     "lint:fix": "yarn lint --fix",
     "clean": "rimraf ./build",
     "build": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig",
-    "deploy:linux": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -d -m -p lin",
-    "deploy:m5stack": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -d -m -p esp32/m5stack"
+    "debug:linux": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -d -m -p lin",
+    "debug:m5stack": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -d -m -p esp32/m5stack",
+    "deploy:linux": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -m -p lin",
+    "deploy:m5stack": "npm run clean && tsc && cp -r assets manifest.json build/ && cd build && mcconfig -m -p esp32/m5stack"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/meganetaaan/moddable-boilerplate.git"
+    "url": "git+ssh://git@github.com/meganetaaan/moddable-avatar.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "m5stack",
+    "moddable",
+    "avatar"
+  ],
+  "author": "Shinya Ishikawa",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/meganetaaan/moddable-boilerplate/issues"
+    "url": "https://github.com/meganetaaan/moddable-avatar/issues"
   },
-  "homepage": "https://github.com/meganetaaan/moddable-boilerplate#readme",
+  "homepage": "https://github.com/meganetaaan/moddable-avatar#readme",
   "private": true,
   "devDependencies": {
     "@types/moddable": "git@github.com:meganetaaan/types-moddable.git",
@@ -31,12 +37,10 @@
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "eslint-config-standard": "^14.1.0",
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
     "sucrase": "^3.10.1",
     "typescript": "^3.3.3"
-  },
-  "dependencies": {
-    "eslint-config-standard": "^14.1.0"
   }
 }
