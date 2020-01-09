@@ -1,5 +1,5 @@
 import Avatar from 'avatar'
-import { Application } from 'piu/MC'
+import { Application, Skin } from 'piu/MC'
 
 const fluid = {
   top: 0,
@@ -9,9 +9,9 @@ const fluid = {
 }
 const ap = new Application(null, {
   ...fluid,
+  skin: new Skin({ fill: 'black' }),
   contents: [
     new Avatar({
-      ...fluid,
       width: 320,
       height: 240,
     }),
