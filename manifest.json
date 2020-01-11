@@ -2,9 +2,10 @@
   "build": {},
   "include": ["$(MODDABLE)/examples/manifest_base.json", "$(MODDABLE)/examples/manifest_piu.json"],
   "resources": {
-    "*": ["./assets/images/*"]
+    "*": ["./assets/images/*"],
+    "*-alpha": ["./assets/fonts/*"]
   },
   "modules": {
-    "*": ["./avatar", "./main"]
+    "*": ["./avatar", "./balloon", "./main"]
   }
 }
