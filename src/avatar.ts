@@ -148,6 +148,20 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
     }
   },
 }))
+
+const AvatarMouthSkinTexture = Texture.template({
+  path: 'mouth-alpha.bmp',
+})
+
+const AvatarMouthSkin = Skin.template({
+  Texture: AvatarMouthSkinTexture,
+  width: 80,
+  height: 40,
+  variants: 80,
+  states: 40,
+  color: AVATAR_COLOR_FG,
+})
+
 const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) => ({
   top,
   right,
@@ -156,11 +170,28 @@ const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) 
   x,
   y,
   name,
-  width: 90,
-  height: 4,
-  skin: new Skin({
-    fill: AVATAR_COLOR_FG,
-  }),
+  width: 80,
+  height: 40,
+  // loop: true,
+  duration: 60 * 6,
+  interval: 60,
+  loop: true,
+  skin: new AvatarMouthSkin(),
+  Behavior: class extends Behavior {
+    onTimeChanged(content: Content) {
+      let v = Math.floor(content.fraction * 10)
+      if (v > 5) {
+        v = 10 - v
+      }
+      content.variant = v
+    }
+    onFinished(content: Content) {
+      content.time = 0
+    }
+    onUpdate(content: OffsetContainer) {
+      const ctx = content.props
+    }
+  },
 }))
 
 interface OffsetContainerProps extends Intervals, FaceContext {}
@@ -193,8 +224,8 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
       name: NAME_RIGHTEYE,
     }),
     new AvatarMouth({
-      left: 118,
-      top: 148,
+      left: 123,
+      top: 128,
       name: NAME_MOUTH,
     }),
   ],
