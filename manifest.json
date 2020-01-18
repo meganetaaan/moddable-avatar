@@ -6,6 +6,6 @@
     "*-alpha": ["./assets/fonts/*"]
   },
   "modules": {
-    "*": ["./avatar", "./balloon", "./main"]
+    "*": ["./avatar", "./balloon", "./main", "./marquee-label"]
   }
 }
