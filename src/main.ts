@@ -20,15 +20,6 @@ const ap = new Application(null, {
       width: 320,
       height: 240,
     }),
-    /*
-    new BalloonLabel({
-      bottom: 30,
-      right: 40,
-      width: 80,
-      height: 30,
-      string: 'Hello',
-    }),
-    */
     new MarqueeLabel({
       state: 0,
       bottom: 10,
