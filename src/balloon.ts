@@ -56,4 +56,4 @@ const BalloonLabel = Label.template(({ top, right, bottom, left, width, height, 
 }))
 
 export default BalloonText
-export { BalloonText, BalloonLabel }
+export { BalloonText, BalloonLabel, BalloonSkin }
