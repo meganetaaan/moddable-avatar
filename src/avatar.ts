@@ -1,13 +1,12 @@
 import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
 
 const AVATAR_COLOR_FG = 'white'
+const AVATAR_COLOR_BG = 'black'
 const NAME_LEFTEYE = 'leftEye'
 const NAME_RIGHTEYE = 'rightEye'
 const NAME_MOUTH = 'mouth'
-
-function isEye(c: Content) {
-  return c.name.indexOf('Eye') >= 0
-}
+const NAME_IRIS = 'iris'
+const NAME_EYELID = 'eyelid'
 
 var normRand = function(m: number, s: number): number {
   var a = 1 - Math.random()
@@ -20,12 +19,12 @@ var normRand = function(m: number, s: number): number {
   }
 }
 
-const AvatarEyeSkinTexture = Texture.template({
+const AvatarIrisSkinTexture = Texture.template({
   path: 'eyes-alpha.bmp',
 })
 
-const AvatarEyeSkin = Skin.template({
-  Texture: AvatarEyeSkinTexture,
+const AvatarIrisSkin = Skin.template({
+  Texture: AvatarIrisSkinTexture,
   width: 16,
   height: 16,
   variants: 16,
@@ -48,7 +47,7 @@ interface Intervals {
   blinkInterval: number
 }
 
-const AvatarEye = Content.template(({ top, right, bottom, left, x, y, name }) => ({
+const AvatarIris = Content.template(({ top, right, bottom, left, x, y, name }) => ({
   top,
   right,
   bottom,
@@ -58,9 +57,35 @@ const AvatarEye = Content.template(({ top, right, bottom, left, x, y, name }) =>
   name,
   width: 16,
   height: 16,
+  skin: new AvatarIrisSkin(),
+}))
+
+const AvatarEyelidSkinTexture = Texture.template({
+  path: 'eyelid-alpha.bmp',
+})
+
+const AvatarEyelidSkin = Skin.template({
+  Texture: AvatarEyelidSkinTexture,
+  width: 24,
+  height: 24,
+  variants: 24,
+  states: 24,
+  color: AVATAR_COLOR_BG,
+})
+
+const AvatarEyelid = Content.template(({ top, right, bottom, left, x, y, name }) => ({
+  top,
+  right,
+  bottom,
+  left,
+  x,
+  y,
+  name,
+  width: 24,
+  height: 24,
   interval: 40,
   duration: 40 * 7,
-  skin: new AvatarEyeSkin(),
+  skin: new AvatarEyelidSkin(),
   Behavior: class extends Behavior {
     onTimeChanged(content: Content) {
       let v = Math.floor(content.fraction * 6)
@@ -75,6 +100,54 @@ const AvatarEye = Content.template(({ top, right, bottom, left, x, y, name }) =>
   },
 }))
 
+const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, height, name }) => ({
+  top,
+  right,
+  bottom,
+  left,
+  x,
+  y,
+  width,
+  height,
+  name,
+  clip: true,
+  contents: [
+    new AvatarIris({
+      top: 3,
+      left: 3,
+      name: NAME_IRIS,
+    }),
+    new AvatarEyelid({
+      top: 0,
+      left: 0,
+      name: NAME_EYELID,
+    }),
+  ],
+  Behavior: class extends Behavior {
+    onDisplaying(container: OffsetContainer) {
+      container.originalPosition = new Map()
+      // TODO: make smart
+      const iris = container.content(NAME_IRIS)
+      if (iris != null) {
+        container.originalPosition.set(iris, {
+          top: iris.y,
+          left: iris.x,
+        })
+      }
+    }
+    onBlink(container: Container) {
+      container.content(NAME_EYELID).start()
+    }
+    onGazeChange(container: OffsetContainer, gaze: { x: number; y: number }) {
+      const iris = container.content(NAME_IRIS)
+      const origPos = container.originalPosition.get(iris)
+      if (origPos != null) {
+        iris.x = origPos.left + gaze.x * 3
+        iris.y = origPos.top + gaze.y * 3
+      }
+    }
+  },
+}))
 const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) => ({
   top,
   right,
@@ -129,31 +202,31 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
   duration: 330 * 9,
   loop: true,
   Behavior: class extends Behavior {
-    onDisplaying(content: OffsetContainer) {
-      content.originalPosition = new Map()
+    onDisplaying(container: OffsetContainer) {
+      container.originalPosition = new Map()
       // TODO: make smart
-      const leftEye = content.content(0)
+      const leftEye = container.content(NAME_LEFTEYE)
       if (leftEye != null) {
-        content.originalPosition.set(leftEye, {
+        container.originalPosition.set(leftEye, {
           top: leftEye.y,
           left: leftEye.x,
         })
       }
-      const rightEye = content.content(1)
+      const rightEye = container.content(NAME_RIGHTEYE)
       if (rightEye != null) {
-        content.originalPosition.set(rightEye, {
+        container.originalPosition.set(rightEye, {
           top: rightEye.y,
           left: rightEye.x,
         })
       }
-      const mouth = content.content(2)
+      const mouth = container.content(NAME_MOUTH)
       if (mouth != null) {
-        content.originalPosition.set(mouth, {
+        container.originalPosition.set(mouth, {
           top: mouth.y,
           left: mouth.x,
         })
       }
-      content.props = {
+      container.props = {
         gaze: {
           x: 0,
           y: 0,
@@ -164,46 +237,43 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
         gazeInterval: 4000,
         blinkInterval: 4000,
       }
-      content.start()
+      container.start()
+      mouth.start()
     }
-    onTimeChanged(content: OffsetContainer) {
-      const f = content.fraction
+    onBleath(container: OffsetContainer, breath: number) {
+      const offsetY = 3 * breath
+      for (let i = 0; i < 3; i++) {
+        const c = container.content(i)
+        const origPos = container.originalPosition.get(c)
+        if (origPos != null) {
+          c.y = origPos.top + offsetY
+        }
+      }
+    }
+    onTimeChanged(container: OffsetContainer) {
+      const f = container.fraction
 
       // update gaze
-      content.props.gazeInterval -= content.interval
-      if (content.props.gazeInterval < 0) {
-        content.props.gaze.x = Math.random() * 6 - 3
-        content.props.gaze.y = Math.random() * 6 - 3
-        content.props.gazeInterval = normRand(3000, 3000) + 1000
+      container.props.gazeInterval -= container.interval
+      if (container.props.gazeInterval < 0) {
+        container.props.gaze.x = Math.random() * 2 - 1
+        container.props.gaze.y = Math.random() * 2 - 1
+        container.content(NAME_LEFTEYE).delegate('onGazeChange', container.props.gaze)
+        container.content(NAME_RIGHTEYE).delegate('onGazeChange', container.props.gaze)
+        container.props.gazeInterval = normRand(3000, 3000) + 1000
       }
-      const gazeX = content.props.gaze.x
-      const gazeY = content.props.gaze.y
 
       // update blink
-      content.props.blinkInterval -= content.interval
-      if (content.props.blinkInterval < 0) {
-        content.content(NAME_LEFTEYE).start()
-        content.content(NAME_RIGHTEYE).start()
-        content.props.blinkInterval = normRand(2000, 2000) + 1000
+      container.props.blinkInterval -= container.interval
+      if (container.props.blinkInterval < 0) {
+        container.content(NAME_LEFTEYE).delegate('onBlink')
+        container.content(NAME_RIGHTEYE).delegate('onBlink')
+        container.props.blinkInterval = normRand(2000, 2000) + 1000
       }
 
       // update breath
-      const breathY = 3 * Math.sin(f * 2 * Math.PI)
-
-      // apply changes
-      // TODO: delegate position changing to face parts itselves
-      for (let i = 0; i < 3; i++) {
-        const c = content.content(i)
-        const origPos = content.originalPosition.get(c)
-        if (origPos != null) {
-          if (isEye(c)) {
-            c.x = origPos.left + gazeX
-            c.y = origPos.top + breathY + gazeY
-          } else {
-            c.y = origPos.top + breathY
-          }
-        }
-      }
+      const breath = Math.sin(f * 2 * Math.PI)
+      this.onBleath(container, breath)
     }
   },
 }))
