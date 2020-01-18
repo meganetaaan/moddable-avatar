@@ -8,10 +8,10 @@ const NAME_MOUTH = 'mouth'
 const NAME_IRIS = 'iris'
 const NAME_EYELID = 'eyelid'
 
-var normRand = function(m: number, s: number): number {
-  var a = 1 - Math.random()
-  var b = 1 - Math.random()
-  var c = Math.sqrt(-2 * Math.log(a))
+function normRand(m: number, s: number): number {
+  const a = 1 - Math.random()
+  const b = 1 - Math.random()
+  const c = Math.sqrt(-2 * Math.log(a))
   if (0.5 - Math.random() > 0) {
     return c * Math.sin(Math.PI * 2 * b) * s + m
   } else {
@@ -20,7 +20,7 @@ var normRand = function(m: number, s: number): number {
 }
 
 const AvatarIrisSkinTexture = Texture.template({
-  path: 'eyes-alpha.bmp',
+  path: 'eye-alpha.bmp',
 })
 
 const AvatarIrisSkin = Skin.template({
@@ -111,10 +111,13 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
   height,
   name,
   clip: true,
+  skin: new Skin({
+    fill: AVATAR_COLOR_BG,
+  }),
   contents: [
     new AvatarIris({
-      top: 3,
-      left: 3,
+      top: 4,
+      left: 4,
       name: NAME_IRIS,
     }),
     new AvatarEyelid({
@@ -172,10 +175,8 @@ const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) 
   name,
   width: 80,
   height: 40,
-  // loop: true,
   duration: 60 * 6,
   interval: 60,
-  loop: true,
   skin: new AvatarMouthSkin(),
   Behavior: class extends Behavior {
     onTimeChanged(content: Content) {
@@ -186,10 +187,20 @@ const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) 
       content.variant = v
     }
     onFinished(content: Content) {
+      content.bubble('onOpenFinished')
       content.time = 0
     }
     onUpdate(content: OffsetContainer) {
       const ctx = content.props
+    }
+    startSpeech(content: Content) {
+      content.loop = true
+      content.start()
+    }
+    stopSpeech(content: Content) {
+      content.stop()
+      content.loop = false
+      content.variant = 0
     }
   },
 }))
@@ -200,7 +211,7 @@ interface OffsetContainer extends Container {
   props: OffsetContainerProps
 }
 
-const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height }) => ({
+const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height, name }) => ({
   top,
   right,
   bottom,
@@ -209,22 +220,23 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
   y,
   width,
   height,
+  name,
   skin: new Skin({
     fill: 'black',
   }),
   contents: [
     new AvatarEye({
-      left: 82,
-      top: 85,
+      left: 78,
+      top: 81,
       name: NAME_LEFTEYE,
     }),
     new AvatarEye({
-      left: 222,
-      top: 88,
+      left: 218,
+      top: 84,
       name: NAME_RIGHTEYE,
     }),
     new AvatarMouth({
-      left: 123,
+      left: 120,
       top: 128,
       name: NAME_MOUTH,
     }),
@@ -269,7 +281,6 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
         blinkInterval: 4000,
       }
       container.start()
-      mouth.start()
     }
     onBleath(container: OffsetContainer, breath: number) {
       const offsetY = 3 * breath
@@ -280,6 +291,14 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
           c.y = origPos.top + offsetY
         }
       }
+    }
+    startSpeech(container: Container) {
+      const mouth = container.content(NAME_MOUTH)
+      mouth.delegate('startSpeech')
+    }
+    stopSpeech(container: Container) {
+      const mouth = container.content(NAME_MOUTH)
+      mouth.delegate('stopSpeech')
     }
     onTimeChanged(container: OffsetContainer) {
       const f = container.fraction

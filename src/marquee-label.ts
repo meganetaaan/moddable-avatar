@@ -19,13 +19,14 @@ const labelStyle = new Style({
   color: 'black',
   horizontal: 'left',
   vertical: 'middle',
+  left: 4,
 })
 
 interface MarqueeContainer extends Container {
   timeline: Timeline
 }
 
-const MarqueeLabel = Container.template(({ left, right, top, bottom, width, height, x, y, state, string }) => ({
+const MarqueeLabel = Container.template(({ left, right, top, bottom, width, height, x, y, name, state, string }) => ({
   left,
   right,
   top,
@@ -34,6 +35,7 @@ const MarqueeLabel = Container.template(({ left, right, top, bottom, width, heig
   height,
   x,
   y,
+  name,
   skin: new BalloonSkin(),
   state,
   clip: true,
@@ -41,6 +43,9 @@ const MarqueeLabel = Container.template(({ left, right, top, bottom, width, heig
     startScroll(it: MarqueeContainer) {
       let label = it.first
       if (label == null || !(label instanceof Label)) {
+        return
+      }
+      if (label.width < it.width - 4) {
         return
       }
       let duration = label.string.length * 200
