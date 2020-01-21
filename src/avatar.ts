@@ -32,13 +32,32 @@ const AvatarIrisSkin = Skin.template({
   color: AVATAR_COLOR_FG,
 })
 
+enum Emotion {
+  NEUTRAL = 'NEUTRAL',
+  ANGRY = 'ANGRY',
+  SAD = 'SAD',
+  HAPPY = 'HAPPY',
+  DOUBTFUL = 'DOUBTFUL',
+  COLD = 'COLD',
+  HOT = 'HOT',
+}
+type EyeOpen = number
+type MouthOpen = number
+type EyebrowOpen = number
+type Gaze = {
+  x: number
+  y: number
+}
+type BothSides<T> = {
+  left: T
+  right: T
+}
 interface FaceContext {
-  gaze: {
-    x: number
-    y: number
-  }
-  eyeOpen: number
-  mouthOpen: number
+  gaze: Gaze | BothSides<Gaze>
+  eyeOpen: EyeOpen | BothSides<EyeOpen>
+  eyebrowOpen: EyebrowOpen | BothSides<EyebrowOpen>
+  mouthOpen: MouthOpen
+  emotion: Emotion
   breath: number
 }
 
@@ -276,9 +295,11 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
         },
         breath: 3,
         eyeOpen: 0,
+        eyebrowOpen: 0,
         mouthOpen: 0,
         gazeInterval: 4000,
         blinkInterval: 4000,
+        emotion: Emotion.NEUTRAL,
       }
       container.start()
     }
@@ -329,3 +350,4 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
 }))
 
 export default Avatar
+export { AvatarIris, FaceContext, Emotion, AvatarEye, AvatarMouth }
