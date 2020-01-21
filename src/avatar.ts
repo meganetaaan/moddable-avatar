@@ -327,8 +327,10 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
       // update gaze
       container.props.gazeInterval -= container.interval
       if (container.props.gazeInterval < 0) {
-        container.props.gaze.x = Math.random() * 2 - 1
-        container.props.gaze.y = Math.random() * 2 - 1
+        container.props.gaze = {
+          x: Math.random() * 2 - 1,
+          y: Math.random() * 2 - 1,
+        }
         container.content(NAME_LEFTEYE).delegate('onGazeChange', container.props.gaze)
         container.content(NAME_RIGHTEYE).delegate('onGazeChange', container.props.gaze)
         container.props.gazeInterval = normRand(3000, 3000) + 1000
