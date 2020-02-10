@@ -158,10 +158,14 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
       }
     }
     onBlink(container: Container) {
-      container.content(NAME_EYELID).start()
+      const eyelid = container.content(NAME_EYELID)
+      eyelid && eyelid.start()
     }
     onGazeChange(container: OffsetContainer, gaze: { x: number; y: number }) {
       const iris = container.content(NAME_IRIS)
+      if (iris == null) {
+        return
+      }
       const origPos = container.originalPosition.get(iris)
       if (origPos != null) {
         iris.x = origPos.left + gaze.x * 3
@@ -307,6 +311,9 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
       const offsetY = 3 * breath
       for (let i = 0; i < 3; i++) {
         const c = container.content(i)
+        if (c == null) {
+          continue
+        }
         const origPos = container.originalPosition.get(c)
         if (origPos != null) {
           c.y = origPos.top + offsetY
@@ -315,15 +322,17 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
     }
     startSpeech(container: Container) {
       const mouth = container.content(NAME_MOUTH)
-      mouth.delegate('startSpeech')
+      mouth && mouth.delegate('startSpeech')
     }
     stopSpeech(container: Container) {
       const mouth = container.content(NAME_MOUTH)
-      mouth.delegate('stopSpeech')
+      mouth && mouth.delegate('stopSpeech')
     }
     onTimeChanged(container: OffsetContainer) {
       const f = container.fraction
 
+      const leftEye = container.content(NAME_LEFTEYE)
+      const rightEye = container.content(NAME_RIGHTEYE)
       // update gaze
       container.props.gazeInterval -= container.interval
       if (container.props.gazeInterval < 0) {
@@ -331,16 +340,16 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
           x: Math.random() * 2 - 1,
           y: Math.random() * 2 - 1,
         }
-        container.content(NAME_LEFTEYE).delegate('onGazeChange', container.props.gaze)
-        container.content(NAME_RIGHTEYE).delegate('onGazeChange', container.props.gaze)
+        leftEye && leftEye.delegate('onGazeChange', container.props.gaze)
+        rightEye && rightEye.delegate('onGazeChange', container.props.gaze)
         container.props.gazeInterval = normRand(3000, 3000) + 1000
       }
 
       // update blink
       container.props.blinkInterval -= container.interval
       if (container.props.blinkInterval < 0) {
-        container.content(NAME_LEFTEYE).delegate('onBlink')
-        container.content(NAME_RIGHTEYE).delegate('onBlink')
+        leftEye && leftEye.delegate('onBlink')
+        rightEye && rightEye.delegate('onBlink')
         container.props.blinkInterval = normRand(2000, 2000) + 1000
       }
 

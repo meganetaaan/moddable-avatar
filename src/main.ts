@@ -40,14 +40,16 @@ const ap = new Application(null, {
 function startSpeech() {
   if (ap.content('balloon') == null) {
     ap.add(balloon)
-    ap.content('avatar').delegate('startSpeech')
+    const avatar = ap.content('avatar')
+    avatar && avatar.delegate('startSpeech')
   }
 }
 
 function stopSpeech() {
   if (ap.content('balloon') != null) {
     ap.remove(balloon)
-    ap.content('avatar').delegate('stopSpeech')
+    const avatar = ap.content('avatar')
+    avatar && avatar.delegate('stopSpeech')
   }
 }
 
