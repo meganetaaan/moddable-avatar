@@ -6,9 +6,10 @@
     "*-alpha": ["./assets/fonts/*"]
   },
   "modules": {
-    "*": ["./avatar", "./balloon", "./main", "./marquee-label"]
+    "*": ["./avatar", "./balloon", "./main", "./marquee-label", "./emoticon"]
   },
   "creation": {
+    "static": 131072,
     "stack": 512
   }
 }

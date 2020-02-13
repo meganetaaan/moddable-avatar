@@ -1,6 +1,7 @@
 import Avatar from 'avatar'
 import { Application, Skin } from 'piu/MC'
 import MarqueeLabel from 'marquee-label'
+import Emoticon from 'emoticon'
 
 declare const global: any
 
@@ -33,6 +34,10 @@ const ap = new Application(null, {
       width: 320,
       height: 240,
       name: 'avatar',
+    }),
+    new Emoticon({
+      top: 20,
+      right: 20,
     }),
   ],
 })
