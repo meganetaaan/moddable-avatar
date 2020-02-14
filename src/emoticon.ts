@@ -16,7 +16,7 @@ const EmoticonTexture = Texture.template({
 })
 const EmoticonSkin = Skin.template({
   Texture: EmoticonTexture,
-  color: 'red',
+  color: 'blue',
   height: 32,
   width: 32,
   states: 32,
@@ -24,7 +24,7 @@ const EmoticonSkin = Skin.template({
 })
 
 const Emoticon = Content.template(
-  ({ top, right, bottom, left, x, y, width = 32, height = 32, name, emotion = Emotion.HAPPY }) => {
+  ({ top, right, bottom, left, x, y, width = 32, height = 32, name, emotion = Emotion.SAD }) => {
     const state = StateEmotionMap.get(emotion)
     return {
       top,

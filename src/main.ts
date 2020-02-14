@@ -1,4 +1,4 @@
-import Avatar from 'avatar'
+import Avatar, { Emotion } from 'avatar'
 import { Application, Skin } from 'piu/MC'
 import MarqueeLabel from 'marquee-label'
 import Emoticon from 'emoticon'
