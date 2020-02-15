@@ -37,7 +37,7 @@ const Emoticon = Content.template(
       height,
       name,
       state,
-      skin: new EmoticonSkin(),
+      Skin: EmoticonSkin,
       Behavior: class extends Behavior {
         public timeline?: Timeline
         public reverse: boolean = false

@@ -52,7 +52,7 @@ type BothSides<T> = {
   left: T
   right: T
 }
-interface FaceContext {
+type FaceContext = {
   gaze: Gaze | BothSides<Gaze>
   eyeOpen: EyeOpen | BothSides<EyeOpen>
   eyebrowOpen: EyebrowOpen | BothSides<EyebrowOpen>
@@ -60,8 +60,7 @@ interface FaceContext {
   emotion: Emotion
   breath: number
 }
-
-interface Intervals {
+type Intervals = {
   gazeInterval: number
   blinkInterval: number
 }
@@ -76,7 +75,7 @@ const AvatarIris = Content.template(({ top, right, bottom, left, x, y, name }) =
   name,
   width: 16,
   height: 16,
-  skin: new AvatarIrisSkin(),
+  Skin: AvatarIrisSkin,
 }))
 
 const AvatarEyelidSkinTexture = Texture.template({
@@ -104,7 +103,7 @@ const AvatarEyelid = Content.template(({ top, right, bottom, left, x, y, name })
   height: 24,
   interval: 40,
   duration: 40 * 7,
-  skin: new AvatarEyelidSkin(),
+  Skin: AvatarEyelidSkin,
   Behavior: class extends Behavior {
     onTimeChanged(content: Content) {
       let v = Math.floor(content.fraction * 6)
@@ -200,7 +199,7 @@ const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) 
   height: 40,
   duration: 60 * 6,
   interval: 60,
-  skin: new AvatarMouthSkin(),
+  Skin: AvatarMouthSkin,
   Behavior: class extends Behavior {
     onTimeChanged(content: Content) {
       let v = Math.floor(content.fraction * 10)
@@ -228,8 +227,8 @@ const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) 
   },
 }))
 
-interface OffsetContainerProps extends Intervals, FaceContext {}
-interface OffsetContainer extends Container {
+type OffsetContainerProps = Intervals & FaceContext
+type OffsetContainer = Container & {
   originalPosition: Map<Content, { top: number; left: number }>
   props: OffsetContainerProps
 }

@@ -6,8 +6,9 @@
     "*-alpha": ["./assets/fonts/*"]
   },
   "modules": {
-    "*": ["./avatar", "./balloon", "./main", "./marquee-label", "./emoticon"]
+    "*": ["./main", "./avatar", "./marquee-label", "./balloon", "./emoticon"]
   },
+  "preload": ["avatar", "marquee-label", "balloon", "emoticon"],
   "creation": {
     "static": 131072,
     "stack": 512

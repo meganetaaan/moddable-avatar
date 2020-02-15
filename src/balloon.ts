@@ -13,7 +13,7 @@ const BalloonSkin = Skin.template({
   tiles: { left: 8, right: 8, top: 8, bottom: 8 },
 })
 
-const balloonStyle = new Style({
+const BalloonStyle = Style.template({
   font: 'Cica-Regular',
   color: 'black',
   horizontal: 'center',
@@ -32,8 +32,8 @@ const BalloonText = Text.template(({ top, right, bottom, left, width, height, x,
     y,
     blocks,
     string,
-    style: balloonStyle,
-    skin: new BalloonSkin(),
+    Style: BalloonStyle,
+    Skin: BalloonSkin,
   }
   if (blocks == null) {
     delete ret.blocks
@@ -51,8 +51,8 @@ const BalloonLabel = Label.template(({ top, right, bottom, left, width, height, 
   x,
   y,
   string,
-  style: balloonStyle,
-  skin: new BalloonSkin(),
+  Style: BalloonStyle,
+  Skin: BalloonSkin,
 }))
 
 export default BalloonText
