@@ -1,7 +1,10 @@
 import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
 
-const AVATAR_COLOR_FG = 'white'
-const AVATAR_COLOR_BG = 'black'
+const AVATAR_COLOR_MOUTH = 'white'
+const AVATAR_COLOR_SCLERA = 'black'
+const AVATAR_COLOR_IRIS = 'white'
+const AVATAR_COLOR_SKIN = 'black'
+
 const NAME_LEFTEYE = 'leftEye'
 const NAME_RIGHTEYE = 'rightEye'
 const NAME_MOUTH = 'mouth'
@@ -29,7 +32,7 @@ const AvatarIrisSkin = Skin.template({
   height: 16,
   variants: 16,
   states: 16,
-  color: AVATAR_COLOR_FG,
+  color: AVATAR_COLOR_IRIS,
 })
 
 enum Emotion {
@@ -42,6 +45,7 @@ enum Emotion {
   COLD = 'COLD',
   HOT = 'HOT',
 }
+
 type EyeOpen = number
 type MouthOpen = number
 type EyebrowOpen = number
@@ -89,7 +93,7 @@ const AvatarEyelidSkin = Skin.template({
   height: 24,
   variants: 24,
   states: 24,
-  color: AVATAR_COLOR_BG,
+  color: AVATAR_COLOR_SKIN,
 })
 
 const AvatarEyelid = Content.template(({ top, right, bottom, left, x, y, name }) => ({
@@ -131,7 +135,7 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
   name,
   clip: true,
   skin: new Skin({
-    fill: AVATAR_COLOR_BG,
+    fill: AVATAR_COLOR_SCLERA,
   }),
   contents: [
     new AvatarIris({
@@ -185,7 +189,7 @@ const AvatarMouthSkin = Skin.template({
   height: 40,
   variants: 80,
   states: 40,
-  color: AVATAR_COLOR_FG,
+  color: AVATAR_COLOR_MOUTH,
 })
 
 const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) => ({
@@ -245,7 +249,7 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
   height,
   name,
   skin: new Skin({
-    fill: 'black',
+    fill: AVATAR_COLOR_SKIN,
   }),
   contents: [
     new AvatarEye({
