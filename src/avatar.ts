@@ -37,6 +37,7 @@ enum Emotion {
   ANGRY = 'ANGRY',
   SAD = 'SAD',
   HAPPY = 'HAPPY',
+  SLEEPY = 'SLEEPY',
   DOUBTFUL = 'DOUBTFUL',
   COLD = 'COLD',
   HOT = 'HOT',

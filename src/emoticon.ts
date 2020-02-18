@@ -6,9 +6,10 @@ const StateEmotionMap = new Map<Emotion, number>()
 StateEmotionMap.set(Emotion.HAPPY, 0)
 StateEmotionMap.set(Emotion.ANGRY, 1)
 StateEmotionMap.set(Emotion.SAD, 2)
-StateEmotionMap.set(Emotion.DOUBTFUL, 3)
+StateEmotionMap.set(Emotion.SLEEPY, 3)
 StateEmotionMap.set(Emotion.HOT, 4)
 StateEmotionMap.set(Emotion.COLD, 5)
+StateEmotionMap.set(Emotion.DOUBTFUL, 6)
 
 type Emoticon = Content
 const EmoticonTexture = Texture.template({
