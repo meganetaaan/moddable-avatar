@@ -1,7 +1,7 @@
 import Avatar, { Emotion } from 'avatar'
 import { Application, Skin } from 'piu/MC'
-import MarqueeLabel from 'marquee-label'
-import Emoticon from 'emoticon'
+import MarqueeLabel from 'src/decoration/marquee-label'
+import Emoticon from 'src/decoration/emoticon'
 
 declare const global: any
 
@@ -38,6 +38,7 @@ const ap = new Application(null, {
     new Emoticon({
       top: 20,
       right: 20,
+      emotion: Emotion.ANGRY,
     }),
   ],
 })

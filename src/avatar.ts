@@ -1,15 +1,10 @@
 import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
 
-const AVATAR_COLOR_MOUTH = 'white'
-const AVATAR_COLOR_SCLERA = 'black'
-const AVATAR_COLOR_IRIS = 'white'
 const AVATAR_COLOR_SKIN = 'black'
 
 const NAME_LEFTEYE = 'leftEye'
 const NAME_RIGHTEYE = 'rightEye'
 const NAME_MOUTH = 'mouth'
-const NAME_IRIS = 'iris'
-const NAME_EYELID = 'eyelid'
 
 function normRand(m: number, s: number): number {
   const a = 1 - Math.random()
@@ -21,19 +16,6 @@ function normRand(m: number, s: number): number {
     return c * Math.cos(Math.PI * 2 * b) * s + m
   }
 }
-
-const AvatarIrisSkinTexture = Texture.template({
-  path: 'eye-alpha.bmp',
-})
-
-const AvatarIrisSkin = Skin.template({
-  Texture: AvatarIrisSkinTexture,
-  width: 16,
-  height: 16,
-  variants: 16,
-  states: 16,
-  color: AVATAR_COLOR_IRIS,
-})
 
 enum Emotion {
   NEUTRAL = 'NEUTRAL',
@@ -64,178 +46,6 @@ type FaceContext = {
   mouthOpen: MouthOpen
   emotion: Emotion
   breath: number
-}
-type Intervals = {
-  gazeInterval: number
-  blinkInterval: number
-}
-
-const AvatarIris = Content.template(({ top, right, bottom, left, x, y, name }) => ({
-  top,
-  right,
-  bottom,
-  left,
-  x,
-  y,
-  name,
-  width: 16,
-  height: 16,
-  Skin: AvatarIrisSkin,
-}))
-
-const AvatarEyelidSkinTexture = Texture.template({
-  path: 'eyelid-alpha.bmp',
-})
-
-const AvatarEyelidSkin = Skin.template({
-  Texture: AvatarEyelidSkinTexture,
-  width: 24,
-  height: 24,
-  variants: 24,
-  states: 24,
-  color: AVATAR_COLOR_SKIN,
-})
-
-const AvatarEyelid = Content.template(({ top, right, bottom, left, x, y, name }) => ({
-  top,
-  right,
-  bottom,
-  left,
-  x,
-  y,
-  name,
-  width: 24,
-  height: 24,
-  interval: 40,
-  duration: 40 * 7,
-  Skin: AvatarEyelidSkin,
-  Behavior: class extends Behavior {
-    onTimeChanged(content: Content) {
-      let v = Math.floor(content.fraction * 6)
-      content.variant = v
-    }
-    onFinished(content: Content) {
-      content.time = 0
-    }
-    onUpdate(content: OffsetContainer) {
-      const ctx = content.props
-    }
-  },
-}))
-
-const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, height, name }) => ({
-  top,
-  right,
-  bottom,
-  left,
-  x,
-  y,
-  width,
-  height,
-  name,
-  clip: true,
-  skin: new Skin({
-    fill: AVATAR_COLOR_SCLERA,
-  }),
-  contents: [
-    new AvatarIris({
-      top: 4,
-      left: 4,
-      name: NAME_IRIS,
-    }),
-    new AvatarEyelid({
-      top: 0,
-      left: 0,
-      name: NAME_EYELID,
-    }),
-  ],
-  Behavior: class extends Behavior {
-    onDisplaying(container: OffsetContainer) {
-      container.originalPosition = new Map()
-      // TODO: make smart
-      const iris = container.content(NAME_IRIS)
-      if (iris != null) {
-        container.originalPosition.set(iris, {
-          top: iris.y,
-          left: iris.x,
-        })
-      }
-    }
-    onBlink(container: Container) {
-      const eyelid = container.content(NAME_EYELID)
-      eyelid && eyelid.start()
-    }
-    onGazeChange(container: OffsetContainer, gaze: { x: number; y: number }) {
-      const iris = container.content(NAME_IRIS)
-      if (iris == null) {
-        return
-      }
-      const origPos = container.originalPosition.get(iris)
-      if (origPos != null) {
-        iris.x = origPos.left + gaze.x * 3
-        iris.y = origPos.top + gaze.y * 3
-      }
-    }
-  },
-}))
-
-const AvatarMouthSkinTexture = Texture.template({
-  path: 'mouth-alpha.bmp',
-})
-
-const AvatarMouthSkin = Skin.template({
-  Texture: AvatarMouthSkinTexture,
-  width: 80,
-  height: 40,
-  variants: 80,
-  states: 40,
-  color: AVATAR_COLOR_MOUTH,
-})
-
-const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name }) => ({
-  top,
-  right,
-  bottom,
-  left,
-  x,
-  y,
-  name,
-  width: 80,
-  height: 40,
-  duration: 60 * 6,
-  interval: 60,
-  Skin: AvatarMouthSkin,
-  Behavior: class extends Behavior {
-    onTimeChanged(content: Content) {
-      let v = Math.floor(content.fraction * 10)
-      if (v > 5) {
-        v = 10 - v
-      }
-      content.variant = v
-    }
-    onFinished(content: Content) {
-      content.bubble('onOpenFinished')
-      content.time = 0
-    }
-    onUpdate(content: OffsetContainer) {
-      const ctx = content.props
-    }
-    startSpeech(content: Content) {
-      content.loop = true
-      content.start()
-    }
-    stopSpeech(content: Content) {
-      content.stop()
-      content.loop = false
-      content.variant = 0
-    }
-  },
-}))
-
-type OffsetContainerProps = Intervals & FaceContext
-type OffsetContainer = Container & {
-  originalPosition: Map<Content, { top: number; left: number }>
-  props: OffsetContainerProps
 }
 
 const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height, name }) => ({

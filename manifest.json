@@ -3,6 +3,7 @@
   "include": ["$(MODDABLE)/examples/manifest_base.json", "$(MODDABLE)/examples/manifest_piu.json"],
   "resources": {
     "*": ["./assets/images/*"],
+    "face/*": ["./assets/images/face/*"],
     "*-alpha": ["./assets/fonts/*"]
   },
   "modules": {
