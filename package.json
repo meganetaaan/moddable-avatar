@@ -31,7 +31,7 @@
   "homepage": "https://github.com/meganetaaan/moddable-avatar#readme",
   "private": true,
   "devDependencies": {
-    "@types/moddable": "git+ssh://git@github.com/meganetaaan/types-moddable.git",
+    "@meganetaaan/types-moddable": "^0.1.1",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^5.16.0",
