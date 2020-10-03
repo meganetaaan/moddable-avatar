@@ -1,0 +1,16 @@
+{
+	"name": "Moddable ESP32",
+	"dockerComposeFile": [
+		"docker-compose.yml"
+	],
+	"service": "dev",
+	"workspaceFolder": "/workspace",
+	"settings": { 
+		"terminal.integrated.shell.linux": null
+	},
+	"extensions": [
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint"
+	],
+	"postCreateCommand": "npm install"
+}
