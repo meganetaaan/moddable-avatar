@@ -1,8 +1,9 @@
 import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
+declare const trace: any
 
 const AVATAR_COLOR_MOUTH = 'white'
-const AVATAR_COLOR_SCLERA = 'black'
-const AVATAR_COLOR_IRIS = 'white'
+const AVATAR_COLOR_SCLERA = 'white'
+const AVATAR_COLOR_IRIS = 'black'
 const AVATAR_COLOR_SKIN = 'black'
 
 const NAME_LEFTEYE = 'leftEye'
@@ -64,6 +65,9 @@ type FaceContext = {
   mouthOpen: MouthOpen
   emotion: Emotion
   breath: number
+  autoUpdateGaze: boolean
+  autoUpdateBlink: boolean
+  autoUpdateBreath: boolean
 }
 type Intervals = {
   gazeInterval: number
@@ -236,6 +240,7 @@ type OffsetContainerProps = Intervals & FaceContext
 type OffsetContainer = Container & {
   originalPosition: Map<Content, { top: number; left: number }>
   props: OffsetContainerProps
+  pressed: boolean
 }
 
 const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height, name }) => ({
@@ -255,11 +260,15 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
     new AvatarEye({
       left: 78,
       top: 81,
+      width: 24,
+      height: 24,
       name: NAME_LEFTEYE,
     }),
     new AvatarEye({
       left: 218,
       top: 84,
+      width: 24,
+      height: 24,
       name: NAME_RIGHTEYE,
     }),
     new AvatarMouth({
@@ -271,7 +280,31 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
   interval: 33,
   duration: 330 * 9,
   loop: true,
+  active: true,
   Behavior: class extends Behavior {
+    onCreate(container: OffsetContainer, data: { props?: OffsetContainerProps }) {
+      const defaultProps = {
+        gaze: {
+          x: 0,
+          y: 0,
+        },
+        breath: 3,
+        eyeOpen: 0,
+        eyebrowOpen: 0,
+        mouthOpen: 0,
+        gazeInterval: 4000,
+        blinkInterval: 4000,
+        autoUpdateBlink: true,
+        autoUpdateBreath: true,
+        autoUpdateGaze: true,
+        emotion: Emotion.NEUTRAL,
+      }
+      container.pressed = false
+      container.props = {
+        ...defaultProps,
+        ...data?.props,
+      }
+    }
     onDisplaying(container: OffsetContainer) {
       container.originalPosition = new Map()
       // TODO: make smart
@@ -296,19 +329,22 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
           left: mouth.x,
         })
       }
-      container.props = {
-        gaze: {
-          x: 0,
-          y: 0,
-        },
-        breath: 3,
-        eyeOpen: 0,
-        eyebrowOpen: 0,
-        mouthOpen: 0,
-        gazeInterval: 4000,
-        blinkInterval: 4000,
-        emotion: Emotion.NEUTRAL,
-      }
+      // container.props = {
+      //   gaze: {
+      //     x: 0,
+      //     y: 0,
+      //   },
+      //   breath: 3,
+      //   eyeOpen: 0,
+      //   eyebrowOpen: 0,
+      //   mouthOpen: 0,
+      //   gazeInterval: 4000,
+      //   blinkInterval: 4000,
+      //   autoUpdateBlink: true,
+      //   autoUpdateBreath: true,
+      //   autoUpdateGaze: true,
+      //   emotion: Emotion.NEUTRAL,
+      // }
       container.start()
     }
     onBleath(container: OffsetContainer, breath: number) {
@@ -332,34 +368,89 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
       const mouth = container.content(NAME_MOUTH)
       mouth && mouth.delegate('stopSpeech')
     }
+    setFocusPoint(container: OffsetContainer, gaze: { x: number; y: number }) {
+      const leftEye = container.content(NAME_LEFTEYE)
+      const rightEye = container.content(NAME_RIGHTEYE)
+      const leftX = Math.max(-1, Math.min(1, (gaze.x - 78) / 40))
+      const rightX = Math.max(-1, Math.min(1, (gaze.x - 218) / 40))
+      const y = Math.max(-1, Math.min(1, (gaze.y - 81) / 40))
+      // trace(`${leftX}, ${rightX}, ${y}\n`)
+      // container.props.gaze = { x, y }
+      leftEye &&
+        leftEye.delegate('onGazeChange', {
+          x: leftX,
+          y,
+        })
+      rightEye &&
+        rightEye.delegate('onGazeChange', {
+          x: rightX,
+          y,
+        })
+    }
+    setGaze(container: OffsetContainer, gaze: { x: number; y: number }) {
+      const leftEye = container.content(NAME_LEFTEYE)
+      const rightEye = container.content(NAME_RIGHTEYE)
+      x = Math.max(-1, Math.min(1, gaze.x))
+      y = Math.max(-1, Math.min(1, gaze.y))
+      container.props.gaze = { x, y }
+      leftEye && leftEye.delegate('onGazeChange', container.props.gaze)
+      rightEye && rightEye.delegate('onGazeChange', container.props.gaze)
+    }
+    onTouchBegan(container: OffsetContainer, id: number, x: number, y: number) {
+      container.pressed = false
+      container.delegate('setFocusPoint', {
+        x,
+        y,
+      })
+    }
+    onTouchMoved(container: OffsetContainer, id: number, x: number, y: number) {
+      container.delegate('setFocusPoint', {
+        x,
+        y,
+      })
+    }
+    onTouchEnded(container: OffsetContainer) {
+      container.pressed = false
+    }
     onTimeChanged(container: OffsetContainer) {
       const f = container.fraction
 
       const leftEye = container.content(NAME_LEFTEYE)
       const rightEye = container.content(NAME_RIGHTEYE)
-      // update gaze
-      container.props.gazeInterval -= container.interval
-      if (container.props.gazeInterval < 0) {
-        container.props.gaze = {
-          x: Math.random() * 2 - 1,
-          y: Math.random() * 2 - 1,
+
+      if (container.props.autoUpdateGaze && !container.pressed) {
+        // update gaze
+        container.props.gazeInterval -= container.interval
+        if (container.props.gazeInterval < 0) {
+          /*
+          container.props.gaze = {
+            x: Math.random() * 2 - 1,
+            y: Math.random() * 2 - 1,
+          }
+          leftEye && leftEye.delegate('onGazeChange', container.props.gaze)
+          rightEye && rightEye.delegate('onGazeChange', container.props.gaze)
+          */
+          container.delegate('setGaze', {
+            x: Math.random() * 2 - 1,
+            y: Math.random() * 2 - 1,
+          })
+          container.props.gazeInterval = normRand(3000, 3000) + 1000
         }
-        leftEye && leftEye.delegate('onGazeChange', container.props.gaze)
-        rightEye && rightEye.delegate('onGazeChange', container.props.gaze)
-        container.props.gazeInterval = normRand(3000, 3000) + 1000
       }
-
-      // update blink
-      container.props.blinkInterval -= container.interval
-      if (container.props.blinkInterval < 0) {
-        leftEye && leftEye.delegate('onBlink')
-        rightEye && rightEye.delegate('onBlink')
-        container.props.blinkInterval = normRand(2000, 2000) + 1000
+      if (container.props.autoUpdateBlink) {
+        // update blink
+        container.props.blinkInterval -= container.interval
+        if (container.props.blinkInterval < 0) {
+          leftEye && leftEye.delegate('onBlink')
+          rightEye && rightEye.delegate('onBlink')
+          container.props.blinkInterval = normRand(2000, 2000) + 1000
+        }
       }
-
-      // update breath
-      const breath = Math.sin(f * 2 * Math.PI)
-      this.onBleath(container, breath)
+      if (container.props.autoUpdateBreath) {
+        // update breath
+        const breath = Math.sin(f * 2 * Math.PI)
+        this.onBleath(container, breath)
+      }
     }
   },
 }))

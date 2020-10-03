@@ -1,9 +1,10 @@
 import Avatar, { Emotion } from 'avatar'
-import { Application, Skin } from 'piu/MC'
+import { Application, Behavior, Content, Skin } from 'piu/MC'
 import MarqueeLabel from 'marquee-label'
 import Emoticon from 'emoticon'
 
 declare const global: any
+declare const trace: any
 
 const SPEECH_STR =
   'わが輩は猫である。名前はまだ無い。どこで生れたかとんと見当けんとうがつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。'
@@ -13,6 +14,21 @@ const fluid = {
   right: 0,
   bottom: 0,
   left: 0,
+}
+
+class SpeechBehavior extends Behavior {
+  onCreate(it: any) {
+    it.flag = false
+    /* noop */
+  }
+  onTouchEnded(it: any) {
+    it.flag = !it.flag
+    if (it.flag) {
+      startSpeech()
+    } else {
+      stopSpeech()
+    }
+  }
 }
 
 const balloon = new MarqueeLabel({
@@ -34,11 +50,22 @@ const ap = new Application(null, {
       width: 320,
       height: 240,
       name: 'avatar',
+      props: {
+        autoUpdateGaze: true,
+      },
     }),
-    new Emoticon({
-      top: 20,
-      right: 20,
-    }),
+    // new Content(null, {
+    //   top: 0,
+    //   left: 0,
+    //   width: 320,
+    //   height: 240,
+    //   active: true,
+    //   Behavior: SpeechBehavior,
+    // }),
+    // new Emoticon({
+    //   top: 20,
+    //   right: 20,
+    // }),
   ],
 })
 
