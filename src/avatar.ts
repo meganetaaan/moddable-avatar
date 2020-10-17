@@ -6,11 +6,19 @@ const AVATAR_COLOR_SCLERA = 'white'
 const AVATAR_COLOR_IRIS = 'black'
 const AVATAR_COLOR_SKIN = 'black'
 
-const NAME_LEFTEYE = 'leftEye'
-const NAME_RIGHTEYE = 'rightEye'
-const NAME_MOUTH = 'mouth'
-const NAME_IRIS = 'iris'
-const NAME_EYELID = 'eyelid'
+const LEFT_EYE = 'leftEye'
+const RIGHT_EYE = 'rightEye'
+const MOUTH = 'mouth'
+const IRIS = 'iris'
+const EYELID = 'eyelid'
+
+const Keys = Object.freeze({
+  LEFT_EYE,
+  RIGHT_EYE,
+  MOUTH,
+  IRIS,
+  EYELID,
+})
 
 function normRand(m: number, s: number): number {
   const a = 1 - Math.random()
@@ -36,16 +44,17 @@ const AvatarIrisSkin = Skin.template({
   color: AVATAR_COLOR_IRIS,
 })
 
-enum Emotion {
-  NEUTRAL = 'NEUTRAL',
-  ANGRY = 'ANGRY',
-  SAD = 'SAD',
-  HAPPY = 'HAPPY',
-  SLEEPY = 'SLEEPY',
-  DOUBTFUL = 'DOUBTFUL',
-  COLD = 'COLD',
-  HOT = 'HOT',
-}
+const Emotion = Object.freeze({
+  NEUTRAL: 'NEUTRAL',
+  ANGRY: 'ANGRY',
+  SAD: 'SAD',
+  HAPPY: 'HAPPY',
+  SLEEPY: 'SLEEPY',
+  DOUBTFUL: 'DOUBTFUL',
+  COLD: 'COLD',
+  HOT: 'HOT',
+})
+type Emotion = typeof Emotion[keyof typeof Emotion]
 
 type EyeOpen = number
 type MouthOpen = number
@@ -145,19 +154,19 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
     new AvatarIris({
       top: 4,
       left: 4,
-      name: NAME_IRIS,
+      name: IRIS,
     }),
     new AvatarEyelid({
       top: 0,
       left: 0,
-      name: NAME_EYELID,
+      name: EYELID,
     }),
   ],
   Behavior: class extends Behavior {
     onDisplaying(container: OffsetContainer) {
       container.originalPosition = new Map()
       // TODO: make smart
-      const iris = container.content(NAME_IRIS)
+      const iris = container.content(IRIS)
       if (iris != null) {
         container.originalPosition.set(iris, {
           top: iris.y,
@@ -166,11 +175,11 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
       }
     }
     onBlink(container: Container) {
-      const eyelid = container.content(NAME_EYELID)
+      const eyelid = container.content(EYELID)
       eyelid && eyelid.start()
     }
     onGazeChange(container: OffsetContainer, gaze: { x: number; y: number }) {
-      const iris = container.content(NAME_IRIS)
+      const iris = container.content(IRIS)
       if (iris == null) {
         return
       }
@@ -262,19 +271,19 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
       top: 81,
       width: 24,
       height: 24,
-      name: NAME_LEFTEYE,
+      name: LEFT_EYE,
     }),
     new AvatarEye({
       left: 218,
       top: 84,
       width: 24,
       height: 24,
-      name: NAME_RIGHTEYE,
+      name: RIGHT_EYE,
     }),
     new AvatarMouth({
       left: 120,
       top: 128,
-      name: NAME_MOUTH,
+      name: MOUTH,
     }),
   ],
   interval: 33,
@@ -308,21 +317,21 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
     onDisplaying(container: OffsetContainer) {
       container.originalPosition = new Map()
       // TODO: make smart
-      const leftEye = container.content(NAME_LEFTEYE)
+      const leftEye = container.content(LEFT_EYE)
       if (leftEye != null) {
         container.originalPosition.set(leftEye, {
           top: leftEye.y,
           left: leftEye.x,
         })
       }
-      const rightEye = container.content(NAME_RIGHTEYE)
+      const rightEye = container.content(RIGHT_EYE)
       if (rightEye != null) {
         container.originalPosition.set(rightEye, {
           top: rightEye.y,
           left: rightEye.x,
         })
       }
-      const mouth = container.content(NAME_MOUTH)
+      const mouth = container.content(MOUTH)
       if (mouth != null) {
         container.originalPosition.set(mouth, {
           top: mouth.y,
@@ -361,16 +370,16 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
       }
     }
     startSpeech(container: Container) {
-      const mouth = container.content(NAME_MOUTH)
+      const mouth = container.content(MOUTH)
       mouth && mouth.delegate('startSpeech')
     }
     stopSpeech(container: Container) {
-      const mouth = container.content(NAME_MOUTH)
+      const mouth = container.content(MOUTH)
       mouth && mouth.delegate('stopSpeech')
     }
     setFocusPoint(container: OffsetContainer, gaze: { x: number; y: number }) {
-      const leftEye = container.content(NAME_LEFTEYE)
-      const rightEye = container.content(NAME_RIGHTEYE)
+      const leftEye = container.content(LEFT_EYE)
+      const rightEye = container.content(RIGHT_EYE)
       const leftX = Math.max(-1, Math.min(1, (gaze.x - 78) / 40))
       const rightX = Math.max(-1, Math.min(1, (gaze.x - 218) / 40))
       const y = Math.max(-1, Math.min(1, (gaze.y - 81) / 40))
@@ -388,8 +397,8 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
         })
     }
     setGaze(container: OffsetContainer, gaze: { x: number; y: number }) {
-      const leftEye = container.content(NAME_LEFTEYE)
-      const rightEye = container.content(NAME_RIGHTEYE)
+      const leftEye = container.content(LEFT_EYE)
+      const rightEye = container.content(RIGHT_EYE)
       x = Math.max(-1, Math.min(1, gaze.x))
       y = Math.max(-1, Math.min(1, gaze.y))
       container.props.gaze = { x, y }
@@ -415,8 +424,8 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
     onTimeChanged(container: OffsetContainer) {
       const f = container.fraction
 
-      const leftEye = container.content(NAME_LEFTEYE)
-      const rightEye = container.content(NAME_RIGHTEYE)
+      const leftEye = container.content(LEFT_EYE)
+      const rightEye = container.content(RIGHT_EYE)
 
       if (container.props.autoUpdateGaze && !container.pressed) {
         // update gaze
@@ -456,4 +465,4 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
 }))
 
 export default Avatar
-export { AvatarIris, FaceContext, Emotion, AvatarEye, AvatarMouth }
+export { AvatarIris, FaceContext, Emotion, AvatarEye, AvatarMouth, Keys }
