@@ -2,8 +2,8 @@ import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
 declare const trace: any
 
 const AVATAR_COLOR_MOUTH = 'white'
-const AVATAR_COLOR_SCLERA = 'white'
-const AVATAR_COLOR_IRIS = 'black'
+const AVATAR_COLOR_SCLERA = 'black'
+const AVATAR_COLOR_IRIS = 'white'
 const AVATAR_COLOR_SKIN = 'black'
 
 const LEFT_EYE = 'leftEye'
