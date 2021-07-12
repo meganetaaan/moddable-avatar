@@ -185,8 +185,8 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
       }
       const origPos = container.originalPosition.get(iris)
       if (origPos != null) {
-        iris.x = origPos.left + gaze.x * 3
-        iris.y = origPos.top + gaze.y * 3
+        iris.x = origPos.left + gaze.x * 8
+        iris.y = origPos.top + gaze.y * 8
       }
     }
   },
@@ -252,45 +252,7 @@ type OffsetContainer = Container & {
   pressed: boolean
 }
 
-const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height, name }) => ({
-  top,
-  right,
-  bottom,
-  left,
-  x,
-  y,
-  width,
-  height,
-  name,
-  skin: new Skin({
-    fill: AVATAR_COLOR_SKIN,
-  }),
-  contents: [
-    new AvatarEye({
-      left: 78,
-      top: 81,
-      width: 24,
-      height: 24,
-      name: LEFT_EYE,
-    }),
-    new AvatarEye({
-      left: 218,
-      top: 84,
-      width: 24,
-      height: 24,
-      name: RIGHT_EYE,
-    }),
-    new AvatarMouth({
-      left: 120,
-      top: 128,
-      name: MOUTH,
-    }),
-  ],
-  interval: 33,
-  duration: 330 * 9,
-  loop: true,
-  active: true,
-  Behavior: class extends Behavior {
+class AvatarBehavior extends Behavior {
     onCreate(container: OffsetContainer, data: { props?: OffsetContainerProps }) {
       const defaultProps = {
         gaze: {
@@ -383,8 +345,6 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
       const leftX = Math.max(-1, Math.min(1, (gaze.x - 78) / 40))
       const rightX = Math.max(-1, Math.min(1, (gaze.x - 218) / 40))
       const y = Math.max(-1, Math.min(1, (gaze.y - 81) / 40))
-      // trace(`${leftX}, ${rightX}, ${y}\n`)
-      // container.props.gaze = { x, y }
       leftEye &&
         leftEye.delegate('onGazeChange', {
           x: leftX,
@@ -399,8 +359,8 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
     setGaze(container: OffsetContainer, gaze: { x: number; y: number }) {
       const leftEye = container.content(LEFT_EYE)
       const rightEye = container.content(RIGHT_EYE)
-      x = Math.max(-1, Math.min(1, gaze.x))
-      y = Math.max(-1, Math.min(1, gaze.y))
+    const x = Math.max(-1, Math.min(1, gaze.x))
+    const y = Math.max(-1, Math.min(1, gaze.y))
       container.props.gaze = { x, y }
       leftEye && leftEye.delegate('onGazeChange', container.props.gaze)
       rightEye && rightEye.delegate('onGazeChange', container.props.gaze)
@@ -431,14 +391,6 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
         // update gaze
         container.props.gazeInterval -= container.interval
         if (container.props.gazeInterval < 0) {
-          /*
-          container.props.gaze = {
-            x: Math.random() * 2 - 1,
-            y: Math.random() * 2 - 1,
-          }
-          leftEye && leftEye.delegate('onGazeChange', container.props.gaze)
-          rightEye && rightEye.delegate('onGazeChange', container.props.gaze)
-          */
           container.delegate('setGaze', {
             x: Math.random() * 2 - 1,
             y: Math.random() * 2 - 1,
@@ -461,8 +413,48 @@ const Avatar = Container.template(({ top, right, bottom, left, x, y, width, heig
         this.onBleath(container, breath)
       }
     }
-  },
+}
+
+const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height, name }) => ({
+  top,
+  right,
+  bottom,
+  left,
+  x,
+  y,
+  width,
+  height,
+  name,
+  skin: new Skin({
+    fill: AVATAR_COLOR_SKIN,
+  }),
+  contents: [
+    new AvatarEye({
+      left: 78,
+      top: 81,
+      width: 24,
+      height: 24,
+      name: LEFT_EYE,
+    }),
+    new AvatarEye({
+      left: 218,
+      top: 84,
+      width: 24,
+      height: 24,
+      name: RIGHT_EYE,
+    }),
+    new AvatarMouth({
+      left: 120,
+      top: 128,
+      name: MOUTH,
+    }),
+  ],
+  interval: 33,
+  duration: 330 * 9,
+  loop: true,
+  active: true,
+  Behavior: AvatarBehavior,
 }))
 
 export default Avatar
-export { AvatarIris, FaceContext, Emotion, AvatarEye, AvatarMouth, Keys }
+export { AvatarBehavior, AvatarIris, FaceContext, Emotion, AvatarEye, AvatarMouth, Keys }
