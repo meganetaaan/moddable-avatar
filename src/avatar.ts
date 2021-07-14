@@ -169,8 +169,8 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
       const iris = container.content(IRIS)
       if (iris != null) {
         container.originalPosition.set(iris, {
-          top: iris.y,
-          left: iris.x,
+          top: iris.offset?.y ?? 0,
+          left: iris.offset?.x ?? 0,
         })
       }
     }
@@ -185,8 +185,10 @@ const AvatarEye = Container.template(({ top, right, bottom, left, x, y, width, h
       }
       const origPos = container.originalPosition.get(iris)
       if (origPos != null) {
-        iris.x = origPos.left + gaze.x * 8
-        iris.y = origPos.top + gaze.y * 8
+        iris.offset = {
+          x: origPos.left + gaze.x * 8,
+          y: origPos.top + gaze.y * 8,
+        }
       }
     }
   },
