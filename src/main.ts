@@ -1,5 +1,5 @@
-import Avatar, { Emotion } from 'avatar'
-import { Application, Behavior, Content, Skin } from 'piu/MC'
+import Avatar, { AvatarEyeBehavior, AvatarEyelidSkinTexture, Emotion } from 'avatar'
+import { Application, Behavior, Color, Content, Skin } from 'piu/MC'
 import MarqueeLabel from 'marquee-label'
 import Emoticon from 'emoticon'
 
@@ -41,31 +41,25 @@ const balloon = new MarqueeLabel({
   string: SPEECH_STR,
 })
 
+function createAvatar(primaryColor: Color, secondaryColor: Color) {
+  return new Avatar({
+      width: 320,
+      height: 240,
+      name: 'avatar',
+      primaryColor,
+      secondaryColor,
+      props: {
+        autoUpdateGaze: true,
+      },
+  })
+}
+
 const ap = new Application(null, {
   displayListLength: 4096,
   ...fluid,
   skin: new Skin({ fill: 'white' }),
   contents: [
-    new Avatar({
-      width: 320,
-      height: 240,
-      name: 'avatar',
-      props: {
-        autoUpdateGaze: true,
-      },
-    }),
-    // new Content(null, {
-    //   top: 0,
-    //   left: 0,
-    //   width: 320,
-    //   height: 240,
-    //   active: true,
-    //   Behavior: SpeechBehavior,
-    // }),
-    // new Emoticon({
-    //   top: 20,
-    //   right: 20,
-    // }),
+    createAvatar("white", "black")
   ],
 })
 
