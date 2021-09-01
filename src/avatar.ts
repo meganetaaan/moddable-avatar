@@ -74,8 +74,8 @@ type FaceContext = {
   mouthOpen: MouthOpen
   emotion: Emotion
   breath: number
-  primaryColor: string,
-  secondaryColor: string,
+  primaryColor?: string,
+  secondaryColor?: string,
   autoUpdateGaze: boolean
   autoUpdateBlink: boolean
   autoUpdateBreath: boolean
