@@ -1,4 +1,4 @@
-import { Content, Container, Skin, Texture, Behavior } from 'piu/MC'
+import { Content, Container, Skin, Texture, Behavior, TextureConstructor } from 'piu/MC'
 declare const trace: any
 
 const AVATAR_COLOR_MOUTH = 'white'
@@ -230,7 +230,18 @@ const AvatarMouthSkin = Skin.template({
   color: AVATAR_COLOR_MOUTH,
 })
 
-const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name, color }) => ({
+function createSkin(Texture: TextureConstructor, color?: string) {
+  return new Skin({
+    Texture,
+    width: 80,
+    height: 40,
+    variants: 80,
+    states: 40,
+    color: color,
+  })
+}
+
+const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name, color, skin = createSkin(AvatarMouthSkinTexture, color) }) => ({
   top,
   right,
   bottom,
@@ -242,15 +253,8 @@ const AvatarMouth = Content.template(({ top, right, bottom, left, x, y, name, co
   height: 40,
   duration: 60 * 6,
   interval: 60,
+  skin,
   // Skin: AvatarMouthSkin,
-  skin: new Skin({
-    Texture: AvatarMouthSkinTexture,
-    width: 80,
-    height: 40,
-    variants: 80,
-    states: 40,
-    color: color,
-  }),
   Behavior: class extends Behavior {
     onTimeChanged(content: Content) {
       let v = Math.floor(content.fraction * 10)
@@ -448,7 +452,7 @@ class AvatarBehavior extends Behavior {
   }
 }
 
-const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height, name, primaryColor = 'white', secondaryColor = 'black' }) => ({
+const Avatar = Container.template(({ top, right, bottom, left, x, y, width, height, name, primaryColor = 'white', secondaryColor = 'black', mouthSkin = '' }) => ({
   top,
   right,
   bottom,
