@@ -1,12 +1,12 @@
 {
   "build": {},
-  "include": ["$(MODDABLE)/examples/manifest_base.json", "$(MODDABLE)/examples/manifest_piu.json"],
+  "include": ["$(MODDABLE)/examples/manifest_base.json", "$(MODDABLE)/examples/manifest_piu.json", "$(MODDABLE)/examples/manifest_typings.json"],
   "resources": {
     "*": ["./assets/images/*"],
     "*-alpha": ["./assets/fonts/*"]
   },
   "modules": {
-    "*": ["./main", "./avatar", "./marquee-label", "./balloon", "./emoticon"]
+    "*": ["./src/main", "./src/avatar", "./src/marquee-label", "./src/balloon", "./src/emoticon"]
   },
   "preload": ["avatar", "marquee-label", "balloon", "emoticon"],
   "creation": {
