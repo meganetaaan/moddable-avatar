@@ -17,7 +17,7 @@ const EmoticonTexture = Texture.template({
 })
 const EmoticonSkin = Skin.template({
   Texture: EmoticonTexture,
-  color: 'blue',
+  color: ['red', 'red', 'blue', 'blue'],
   height: 32,
   width: 32,
   states: 32,
